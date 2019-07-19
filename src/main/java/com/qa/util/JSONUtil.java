@@ -18,4 +18,5 @@ public class JSONUtil {
 
 		return gson.fromJson(jsonString, clazz);
 	}
+
 }

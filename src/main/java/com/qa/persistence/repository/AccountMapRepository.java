@@ -1,36 +1,62 @@
 package com.qa.persistence.repository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import javax.enterprise.inject.Alternative;
 
 import com.qa.persistence.domain.Account;
 import com.qa.util.JSONUtil;
 
+@Alternative
 public class AccountMapRepository implements AccountRepository {
-	private int count = 0;
-	Map<Integer, Account> accountMap = new HashMap<Integer, Account>();
+
+	private Map<Integer, Account> accountMap;
+
+	private int count = 1;
 
 	private JSONUtil json = new JSONUtil();
 
-	// You must provide concrete implementation for each of these methods
-	// do not change the method signature
-	// THINK - if the parameter is a String, or the return type is a String
-	// How can I convert to a String from an Object?
-	// What utility methods do I have available?
-
-	// You must complete this section using TDD
-	// You can use the suggested tests or build your own.
+	public AccountMapRepository() {
+		super();
+		this.accountMap = new HashMap<Integer, Account>();
+		this.json = new JSONUtil();
+	}
 
 	public String getAllAccounts() {
 		// TODO Auto-generated method stub
-		return null;
+		return this.json.getJSONForObject(this.accountMap.values());
+	}
+
+	public int numberOfMatchingAccounts(String firstName) {
+		return count;
+		// double numberOfAcc = 0.0;
+
+		/// Attempt 01
+		// if (json.getJSONForObject(account).contains(firstName)) {
+		// noAcc++;
+		// }
+
+		// Loop through map here
+		/// Attempt 02
+		// accountMap.forEach((key, value) -> {
+		// if (value.getFirstName().equals(firstName)) {
+		// System.out.println(firstName);
+		// }
+		// });
+
+		// List<Account> matching = accountMap.values().stream().filter(x ->
+		// firstName.equals(x.getFirstName()))
+		// .collect(Collectors.toList());
+		// return matching.size();
 	}
 
 	public String createAccount(String account) {
 		Account toAdd = this.json.getObjectForJSON(account, Account.class);
-		accountMap.put(count++, toAdd);
+		this.accountMap.put(this.count++, toAdd);
 		if (this.accountMap.containsValue(toAdd)) {
-			return SUCCESSFULLY_ADDED_ACCOUNT;
+			return SUCCESS;
 		} else {
 			return "Failed to add account";
 		}
@@ -41,9 +67,21 @@ public class AccountMapRepository implements AccountRepository {
 		return null;
 	}
 
-	public String updateAccount(int accountNumber, String account) {
-		// TODO Auto-generated method stub
+	public List<Account> findAccountsByFirstName(String firstName) {
 		return null;
+		// return this.accountMap.values().stream().filter(a ->
+		// a.getFirstName().equals(firstName))
+		// .collect(Collectors.toList());
+	}
+
+	public String updateAccount(int accountNumber, String account) {
+		Account toUpdate = this.json.getObjectForJSON(account, Account.class);
+		this.accountMap.replace(accountNumber, toUpdate);
+		if (this.accountMap.containsValue(toUpdate)) {
+			return FAILURE;
+		} else {
+			return "Failed to add account";
+		}
 	}
 
 }
